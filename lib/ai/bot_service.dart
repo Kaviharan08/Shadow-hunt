@@ -3,130 +3,73 @@ import 'dart:math';
 import '../models/player_model.dart';
 
 class BotService {
-  Timer? _botTimer;
-  final Random _random = Random();
+  Timer? _timer;
+  final Random _rng = Random();
+  double _x = 400, _y = 400;
+  double _tx = 400, _ty = 400;
+  String _state = 'patrol';
 
-  // Bot state
-  double _botX = 400;
-  double _botY = 300;
-  String _botState = 'patrol'; // patrol, chase, flee
-  double _targetX = 400;
-  double _targetY = 300;
+  static const double mapW = 1400;
+  static const double mapH = 1200;
 
-  static const double mapWidth = 800;
-  static const double mapHeight = 700;
-  static const double botSpeed = 2.5;
-  static const double chaseSpeed = 3.5;
-  static const double detectionRange = 180;
-  static const double attackRange = 50;
+  double get x => _x;
+  double get y => _y;
 
-  double get botX => _botX;
-  double get botY => _botY;
-
-  void startBot({
+  void start({
+    required String role,
     required Function(double x, double y) onMove,
-    required Function(String targetUid) onAttack,
-    required Function() onPatrolTask,
-    required PlayerModel? playerToChase,
-    required String botRole, // 'killer' or 'survivor'
+    required Function(String uid) onAttack,
+    required Function() onTask,
+    required PlayerModel? target,
+    double speed = 3.0,
   }) {
-    _pickNewPatrolTarget();
-    _botTimer = Timer.periodic(const Duration(milliseconds: 50), (timer) {
-      _updateBot(
-        onMove: onMove,
-        onAttack: onAttack,
-        onPatrolTask: onPatrolTask,
-        playerToChase: playerToChase,
-        botRole: botRole,
-      );
+    _pickPatrol();
+    _timer = Timer.periodic(const Duration(milliseconds: 50), (_) {
+      _tick(role: role, onMove: onMove, onAttack: onAttack,
+            onTask: onTask, target: target, speed: speed);
     });
   }
 
-  void _updateBot({
+  void _tick({
+    required String role,
     required Function(double x, double y) onMove,
-    required Function(String targetUid) onAttack,
-    required Function() onPatrolTask,
-    required PlayerModel? playerToChase,
-    required String botRole,
+    required Function(String uid) onAttack,
+    required Function() onTask,
+    required PlayerModel? target,
+    required double speed,
   }) {
-    if (playerToChase == null) return;
-
-    double dx = playerToChase.x - _botX;
-    double dy = playerToChase.y - _botY;
+    if (target == null) return;
+    double dx = target.x - _x, dy = target.y - _y;
     double dist = sqrt(dx * dx + dy * dy);
 
-    if (botRole == 'killer') {
-      // Killer bot: chase and attack survivors
-      if (dist < detectionRange) {
-        _botState = 'chase';
-        if (dist < attackRange) {
-          onAttack(playerToChase.uid);
-          return;
-        }
-      } else {
-        _botState = 'patrol';
-      }
+    if (role == 'killer') {
+      _state = dist < 200 ? 'chase' : 'patrol';
+      if (dist < 55) { onAttack(target.uid); return; }
     } else {
-      // Survivor bot: flee from killer, do tasks
-      if (dist < detectionRange) {
-        _botState = 'flee';
-      } else {
-        _botState = 'patrol';
-        // Randomly complete a task
-        if (_random.nextInt(200) == 0) {
-          onPatrolTask();
-        }
-      }
+      _state = dist < 180 ? 'flee' : 'patrol';
+      if (_state == 'patrol' && _rng.nextInt(180) == 0) onTask();
     }
 
-    _moveBot(onMove);
+    _move(onMove, speed);
   }
 
-  void _moveBot(Function(double x, double y) onMove) {
-    double speed = _botState == 'chase' ? chaseSpeed : botSpeed;
-    double dx, dy;
-
-    if (_botState == 'flee') {
-      // Move away from target
-      dx = _botX - _targetX;
-      dy = _botY - _targetY;
-    } else {
-      dx = _targetX - _botX;
-      dy = _targetY - _botY;
-    }
-
-    double dist = sqrt(dx * dx + dy * dy);
-
-    if (dist < 20) {
-      _pickNewPatrolTarget();
-      return;
-    }
-
-    double norm = dist > 0 ? dist : 1;
-    _botX = (_botX + (dx / norm) * speed).clamp(40, mapWidth - 40);
-    _botY = (_botY + (dy / norm) * speed).clamp(40, mapHeight - 40);
-
-    // Add slight random wobble
-    _botX += (_random.nextDouble() - 0.5) * 1.5;
-    _botY += (_random.nextDouble() - 0.5) * 1.5;
-
-    onMove(_botX, _botY);
+  void _move(Function(double, double) onMove, double speed) {
+    double spd = _state == 'chase' ? speed * 1.3 : speed;
+    double dx = _state == 'flee' ? _x - _tx : _tx - _x;
+    double dy = _state == 'flee' ? _y - _ty : _ty - _y;
+    double d = sqrt(dx * dx + dy * dy);
+    if (d < 15) { _pickPatrol(); return; }
+    _x = (_x + (dx / d) * spd + (_rng.nextDouble() - 0.5)).clamp(50, mapW - 50);
+    _y = (_y + (dy / d) * spd + (_rng.nextDouble() - 0.5)).clamp(50, mapH - 50);
+    onMove(_x, _y);
   }
 
-  void _pickNewPatrolTarget() {
-    _targetX = 80 + _random.nextDouble() * (mapWidth - 160);
-    _targetY = 80 + _random.nextDouble() * (mapHeight - 160);
+  void _pickPatrol() {
+    _tx = 80 + _rng.nextDouble() * (mapW - 160);
+    _ty = 80 + _rng.nextDouble() * (mapH - 160);
   }
 
-  void setChaseTarget(double x, double y) {
-    _targetX = x;
-    _targetY = y;
-  }
-
-  void stopBot() {
-    _botTimer?.cancel();
-    _botTimer = null;
-  }
-
-  void dispose() => stopBot();
+  void updateTarget(double x, double y) { _tx = x; _ty = y; }
+  void stop() { _timer?.cancel(); _timer = null; }
+  void dispose() => stop();
 }
