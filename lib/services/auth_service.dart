@@ -7,75 +7,76 @@ class AuthService extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   User? get currentUser => _auth.currentUser;
-  bool get isLoggedIn => _auth.currentUser != null;
+  String get uid => _auth.currentUser?.uid ?? '';
 
-  Stream<User?> get authStateChanges => _auth.authStateChanges();
-
-  // Register with email & password
-  Future<String?> register({
-    required String email,
-    required String password,
-    required String username,
-  }) async {
+  Future<String?> register(String email, String password, String username) async {
     try {
-      UserCredential result = await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-
-      // Save user profile to Firestore
-      await _firestore.collection('users').doc(result.user!.uid).set({
-        'uid': result.user!.uid,
+      UserCredential cred = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      await _firestore.collection('users').doc(cred.user!.uid).set({
         'username': username,
         'email': email,
         'wins': 0,
         'losses': 0,
-        'totalGames': 0,
+        'gamesPlayed': 0,
         'createdAt': FieldValue.serverTimestamp(),
       });
-
       notifyListeners();
-      return null; // success
-    } on FirebaseAuthException catch (e) {
-      return e.message;
+      return null;
+    } catch (e) {
+      return e.toString();
     }
   }
 
-  // Login
-  Future<String?> login({
-    required String email,
-    required String password,
-  }) async {
+  Future<String?> login(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       notifyListeners();
       return null;
-    } on FirebaseAuthException catch (e) {
-      return e.message;
+    } catch (e) {
+      return e.toString();
     }
   }
 
-  // Logout
   Future<void> logout() async {
     await _auth.signOut();
     notifyListeners();
   }
 
-  // Get username
   Future<String> getUsername() async {
-    if (currentUser == null) return 'Unknown';
-    DocumentSnapshot doc =
-        await _firestore.collection('users').doc(currentUser!.uid).get();
-    return (doc.data() as Map<String, dynamic>?)?['username'] ?? 'Unknown';
+    if (uid.isEmpty) return 'Guest';
+    try {
+      DocumentSnapshot doc =
+          await _firestore.collection('users').doc(uid).get();
+      return (doc.data() as Map<String, dynamic>?)?['username'] ?? 'Player';
+    } catch (_) {
+      return 'Player';
+    }
   }
 
-  // Update win/loss stats
   Future<void> updateStats({required bool won}) async {
-    if (currentUser == null) return;
-    await _firestore.collection('users').doc(currentUser!.uid).update({
-      'wins': FieldValue.increment(won ? 1 : 0),
-      'losses': FieldValue.increment(won ? 0 : 1),
-      'totalGames': FieldValue.increment(1),
-    });
+    if (uid.isEmpty) return;
+    try {
+      await _firestore.collection('users').doc(uid).update({
+        'gamesPlayed': FieldValue.increment(1),
+        'wins': won ? FieldValue.increment(1) : FieldValue.increment(0),
+        'losses': won ? FieldValue.increment(0) : FieldValue.increment(1),
+      });
+    } catch (_) {}
+  }
+
+  Future<List<Map<String, dynamic>>> getLeaderboard() async {
+    try {
+      QuerySnapshot snap = await _firestore
+          .collection('users')
+          .orderBy('wins', descending: true)
+          .limit(20)
+          .get();
+      return snap.docs
+          .map((d) => d.data() as Map<String, dynamic>)
+          .toList();
+    } catch (_) {
+      return [];
+    }
   }
 }

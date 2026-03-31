@@ -36,8 +36,10 @@ class _HunterScreenState extends State<HunterScreen> with SingleTickerProviderSt
   Future<void> _catchPlayer(String targetUid) async {
     await _gameService.catchPlayer(widget.room.roomId, targetUid);
     if (_currentRoom != null) await _gameService.checkWinCondition(widget.room.roomId, _currentRoom!);
-    if (mounted) ScaffoldMessenger.of(context).showSnackBar(
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('🩸 Survivor caught!'), backgroundColor: Colors.red));
+    }
   }
 
   @override
@@ -66,10 +68,10 @@ class _HunterScreenState extends State<HunterScreen> with SingleTickerProviderSt
                     color: Color.lerp(const Color(0xFF8B0000), const Color(0xFF4A0000), _pulseController.value),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Row(children: [
-                    const HorrorCrewmate(bodyColor: Color(0xFF8B0000), isHunter: true, size: 60),
-                    const SizedBox(width: 12),
-                    const Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  child: const Row(children: [
+                    HorrorCrewmate(bodyColor: Color(0xFF8B0000), isHunter: true, size: 60),
+                    SizedBox(width: 12),
+                    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Text('YOU ARE THE HUNTER', style: TextStyle(
                         color: Colors.white, fontWeight: FontWeight.bold, letterSpacing: 2, fontSize: 16)),
                       Text('Catch all survivors!', style: TextStyle(color: Colors.white54, fontSize: 12)),
@@ -152,7 +154,7 @@ class _HunterScreenState extends State<HunterScreen> with SingleTickerProviderSt
       backgroundColor: const Color(0xFF1A0000),
       title: const Text('Catch Survivor?', style: TextStyle(color: Colors.white)),
       content: Row(children: [
-        HorrorCrewmate(bodyColor: const Color(0xFF003399), size: 60),
+        const HorrorCrewmate(bodyColor: Color(0xFF003399), size: 60),
         const SizedBox(width: 12),
         Text('Catch ${survivor.username}?', style: const TextStyle(color: Colors.white70)),
       ]),

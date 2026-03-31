@@ -7,15 +7,11 @@ import 'screens/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  try {
+  if (Firebase.apps.isEmpty) {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-  } catch (e) {
-    // Already initialized — ignore
   }
-  
   runApp(const ShadowHuntApp());
 }
 
@@ -25,9 +21,7 @@ class ShadowHuntApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => AuthService()),
-      ],
+      providers: [ChangeNotifierProvider(create: (_) => AuthService())],
       child: MaterialApp(
         title: 'Shadow Hunt',
         debugShowCheckedModeBanner: false,
@@ -35,7 +29,6 @@ class ShadowHuntApp extends StatelessWidget {
           colorScheme: ColorScheme.dark(
             primary: const Color(0xFFFF3333),
             secondary: const Color(0xFF8B0000),
-            background: const Color(0xFF0A0A0A),
             surface: const Color(0xFF1A1A1A),
           ),
           scaffoldBackgroundColor: const Color(0xFF0A0A0A),

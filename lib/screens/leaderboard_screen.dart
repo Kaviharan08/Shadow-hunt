@@ -1,155 +1,111 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../services/leaderboard_service.dart';
 import '../services/auth_service.dart';
 
-class LeaderboardScreen extends StatelessWidget {
+class LeaderboardScreen extends StatefulWidget {
   const LeaderboardScreen({super.key});
+  @override
+  State<LeaderboardScreen> createState() => _LeaderboardScreenState();
+}
+
+class _LeaderboardScreenState extends State<LeaderboardScreen> {
+  List<Map<String, dynamic>> _players = [];
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final data = await context.read<AuthService>().getLeaderboard();
+    setState(() { _players = data; _loading = false; });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final leaderboardService = LeaderboardService();
-    final auth = context.read<AuthService>();
-
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0A0A),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text('LEADERBOARD',
-            style: TextStyle(
-                color: Colors.white, letterSpacing: 3, fontSize: 16)),
-      ),
-      body: StreamBuilder<List<Map<String, dynamic>>>(
-        stream: leaderboardService.getLeaderboard(),
-        builder: (ctx, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-                child: CircularProgressIndicator(color: Colors.red));
-          }
-
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(
-              child: Text('No players yet!',
-                  style: TextStyle(color: Colors.white54)),
-            );
-          }
-
-          List<Map<String, dynamic>> players = snapshot.data!;
-
-          return ListView.builder(
-            padding: const EdgeInsets.all(20),
-            itemCount: players.length,
-            itemBuilder: (ctx, i) {
-              final player = players[i];
-              bool isMe = player['uid'] == auth.currentUser?.uid;
-              int rank = i + 1;
-
-              Color rankColor = Colors.white54;
-              if (rank == 1) rankColor = Colors.yellow;
-              if (rank == 2) rankColor = Colors.grey;
-              if (rank == 3) rankColor = const Color(0xFFCD7F32);
-
-              return Container(
-                margin: const EdgeInsets.only(bottom: 10),
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: isMe
-                      ? const Color(0xFF1A0A00)
-                      : const Color(0xFF1A1A1A),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: isMe
-                        ? Colors.red.withOpacity(0.5)
-                        : Colors.white12,
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    // Rank
-                    SizedBox(
-                      width: 40,
-                      child: Text(
-                        rank <= 3 ? _rankEmoji(rank) : '#$rank',
-                        style: TextStyle(
-                            color: rankColor,
-                            fontSize: rank <= 3 ? 22 : 16,
-                            fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-
-                    // Username
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          Container(decoration: const BoxDecoration(
+            gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter,
+              colors: [Color(0xFF000000), Color(0xFF050F05)]),
+          )),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(children: [
+                    IconButton(onPressed: () => Navigator.pop(context),
+                        icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF446644))),
+                    const SizedBox(width: 8),
+                    const Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text('LEADERBOARD', style: TextStyle(color: Colors.white,
+                          fontSize: 22, fontWeight: FontWeight.bold, letterSpacing: 4)),
+                      Text('TOP HUNTERS', style: TextStyle(color: Color(0xFF446644),
+                          fontSize: 11, letterSpacing: 3)),
+                    ]),
+                  ]),
+                  const SizedBox(height: 20),
+                  if (_loading)
+                    const Center(child: CircularProgressIndicator(color: Color(0xFF8B0000)))
+                  else if (_players.isEmpty)
+                    const Center(child: Padding(
+                      padding: EdgeInsets.only(top: 60),
+                      child: Text('No players yet', style: TextStyle(color: Color(0xFF446644))),
+                    ))
+                  else
                     Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                player['username'] ?? 'Unknown',
-                                style: TextStyle(
-                                    color: isMe ? Colors.red : Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15),
-                              ),
-                              if (isMe) ...[
-                                const SizedBox(width: 8),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 6, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    color: Colors.red.withOpacity(0.2),
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                  child: const Text('YOU',
-                                      style: TextStyle(
-                                          color: Colors.red,
-                                          fontSize: 9,
-                                          letterSpacing: 1)),
-                                ),
-                              ],
-                            ],
-                          ),
-                          Text(
-                            '${player['totalGames'] ?? 0} games played',
-                            style: const TextStyle(
-                                color: Colors.white38, fontSize: 11),
-                          ),
-                        ],
+                      child: ListView.builder(
+                        itemCount: _players.length,
+                        itemBuilder: (ctx, i) {
+                          final p = _players[i];
+                          Color rankColor = i == 0 ? Colors.amber
+                              : i == 1 ? Colors.grey[400]!
+                              : i == 2 ? const Color(0xFFCD7F32)
+                              : const Color(0xFF446644);
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 10),
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                            decoration: BoxDecoration(
+                              color: i < 3 ? const Color(0xFF0D1F0D) : const Color(0xFF080D08),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: i == 0 ? Colors.amber.withOpacity(0.3)
+                                    : const Color(0xFF1A3A1A)),
+                            ),
+                            child: Row(children: [
+                              SizedBox(width: 32,
+                                child: Text('#${i + 1}', style: TextStyle(
+                                  color: rankColor, fontWeight: FontWeight.bold, fontSize: 14))),
+                              if (i < 3) Icon(Icons.emoji_events, color: rankColor, size: 18),
+                              if (i >= 3) const Icon(Icons.person, color: Color(0xFF446644), size: 18),
+                              const SizedBox(width: 10),
+                              Expanded(child: Text(p['username'] ?? 'Unknown',
+                                  style: const TextStyle(color: Colors.white,
+                                      fontWeight: FontWeight.bold, fontSize: 14))),
+                              Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+                                Text('${p['wins'] ?? 0} wins',
+                                    style: const TextStyle(color: Color(0xFFCC2222),
+                                        fontWeight: FontWeight.bold, fontSize: 13)),
+                                Text('${p['gamesPlayed'] ?? 0} games',
+                                    style: const TextStyle(color: Color(0xFF446644), fontSize: 11)),
+                              ]),
+                            ]),
+                          );
+                        },
                       ),
                     ),
-
-                    // Stats
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text('${player['wins'] ?? 0} wins',
-                            style: const TextStyle(
-                                color: Colors.green,
-                                fontWeight: FontWeight.bold)),
-                        Text('${player['losses'] ?? 0} losses',
-                            style: const TextStyle(
-                                color: Colors.red, fontSize: 12)),
-                      ],
-                    ),
-                  ],
-                ),
-              );
-            },
-          );
-        },
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
-  }
-
-  String _rankEmoji(int rank) {
-    switch (rank) {
-      case 1: return '🥇';
-      case 2: return '🥈';
-      case 3: return '🥉';
-      default: return '#$rank';
-    }
   }
 }

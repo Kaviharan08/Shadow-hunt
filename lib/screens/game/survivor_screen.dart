@@ -70,8 +70,10 @@ class _SurvivorScreenState extends State<SurvivorScreen> {
       int idx = _tasks.indexWhere((t) => t.taskId == task.taskId);
       if (idx >= 0) _tasks[idx].isCompleted = true;
     });
-    if (mounted) ScaffoldMessenger.of(context).showSnackBar(
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('✅ Task completed!'), backgroundColor: Colors.green));
+    }
     if (_currentRoom != null) await _gameService.checkWinCondition(widget.room.roomId, _currentRoom!);
   }
 
@@ -109,10 +111,10 @@ class _SurvivorScreenState extends State<SurvivorScreen> {
               color: const Color(0xFF001A33), borderRadius: BorderRadius.circular(12),
               border: Border.all(color: Colors.blue.withOpacity(0.3)),
             ),
-            child: Row(children: [
-              const HorrorCrewmate(bodyColor: Color(0xFF003399), size: 60),
-              const SizedBox(width: 12),
-              const Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            child: const Row(children: [
+              HorrorCrewmate(bodyColor: Color(0xFF003399), size: 60),
+              SizedBox(width: 12),
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text('YOU ARE A SURVIVOR', style: TextStyle(
                   color: Colors.white, fontWeight: FontWeight.bold, letterSpacing: 2)),
                 Text('Complete tasks to escape!', style: TextStyle(color: Colors.white54, fontSize: 12)),
