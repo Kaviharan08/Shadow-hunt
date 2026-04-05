@@ -91,7 +91,7 @@ class _GameOverScreenState extends State<GameOverScreen>
                                   blurRadius: 50, spreadRadius: 10)],
                             ),
                             child: Icon(
-                              _iWon ? Icons.emoji_events : Icons.skull,
+                          _iWon ? Icons.emoji_events : Icons.sentiment_very_dissatisfied,
                               color: mainColor, size: 64,
                             ),
                           ),

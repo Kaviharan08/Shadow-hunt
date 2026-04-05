@@ -1,325 +1,264 @@
-import 'package:flutter/material.dart';
 import 'dart:math';
-import '../models/powerup.dart';
-import '../models/hunter_type.dart';
+import 'package:flutter/material.dart';
 
-// ── Map constants ────────────────────────────────────────────────────────────
+class ToxicTheme {
+  static const Color bg = Color(0xFF060812);
+  static const Color bgDark = Color(0xFF0A0F1F);
+  static const Color green = Color(0xFF5BE7FF);
+  static const Color greenDim = Color(0xFF72B7FF);
+  static const Color greenDark = Color(0xFF1A3A68);
+  static const Color greenGlow = Color(0xFF8AF5FF);
+  static const Color red = Color(0xFFFF3B5F);
+  static const Color redDim = Color(0xFF6D1126);
+  static const Color white = Color(0xFFEAF6FF);
+  static const Color grey = Color(0xFF161D2C);
+  static const Color purple = Color(0xFF8F5BFF);
+  static const Color cyan = Color(0xFF33D6FF);
+}
+
 const double kMapW = 1400;
 const double kMapH = 1200;
 
-// ── Large Horror Forest Map ──────────────────────────────────────────────────
 class ForestMapPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    _drawBase(canvas, size);
-    _drawZones(canvas, size);
-    _drawPaths(canvas, size);
-    _drawTrees(canvas, size);
-    _drawRocks(canvas, size);
-    _drawBushes(canvas, size);
-    _drawLighting(canvas, size);
-  }
-
-  void _drawBase(Canvas canvas, Size size) {
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), Paint()..color = const Color(0xFF070C18));
     final rng = Random(13);
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height),
-        Paint()..color = const Color(0xFF080F08));
-    final p = Paint();
-    for (int i = 0; i < 200; i++) {
-      p.color = Color.lerp(
-          const Color(0xFF0A140A), const Color(0xFF142014), rng.nextDouble())!;
+    for (int i = 0; i < 220; i++) {
       canvas.drawCircle(
-          Offset(rng.nextDouble() * size.width, rng.nextDouble() * size.height),
-          6 + rng.nextDouble() * 22, p);
-    }
-  }
-
-  void _drawZones(Canvas canvas, Size size) {
-    // Darker clearing zones for atmosphere
-    final p = Paint()..color = const Color(0xFF060C06);
-    canvas.drawOval(
-        Rect.fromCenter(center: Offset(size.width * 0.5, size.height * 0.5),
-            width: 340, height: 260), p);
-    canvas.drawOval(
-        Rect.fromCenter(center: Offset(size.width * 0.2, size.height * 0.8),
-            width: 220, height: 180), p);
-    canvas.drawOval(
-        Rect.fromCenter(center: Offset(size.width * 0.8, size.height * 0.3),
-            width: 200, height: 160), p);
-    canvas.drawOval(
-        Rect.fromCenter(center: Offset(size.width * 0.15, size.height * 0.2),
-            width: 180, height: 140), p);
-    canvas.drawOval(
-        Rect.fromCenter(center: Offset(size.width * 0.85, size.height * 0.75),
-            width: 200, height: 160), p);
-  }
-
-  void _drawPaths(Canvas canvas, Size size) {
-    final p = Paint()
-      ..color = const Color(0xFF140E06)
-      ..strokeWidth = 36
-      ..strokeCap = StrokeCap.round
-      ..style = PaintingStyle.stroke;
-    // Main cross paths
-    canvas.drawLine(Offset(0, size.height * 0.5), Offset(size.width, size.height * 0.5), p);
-    canvas.drawLine(Offset(size.width * 0.5, 0), Offset(size.width * 0.5, size.height), p);
-    // Diagonal paths
-    p.strokeWidth = 22;
-    canvas.drawLine(const Offset(0, 0), Offset(size.width * 0.35, size.height * 0.35), p);
-    canvas.drawLine(Offset(size.width, 0), Offset(size.width * 0.65, size.height * 0.35), p);
-    canvas.drawLine(Offset(0, size.height), Offset(size.width * 0.35, size.height * 0.65), p);
-    canvas.drawLine(Offset(size.width, size.height),
-        Offset(size.width * 0.65, size.height * 0.65), p);
-    // Side paths
-    p.strokeWidth = 18;
-    canvas.drawLine(Offset(size.width * 0.25, 0), Offset(size.width * 0.25, size.height), p);
-    canvas.drawLine(Offset(size.width * 0.75, 0), Offset(size.width * 0.75, size.height), p);
-    canvas.drawLine(Offset(0, size.height * 0.25), Offset(size.width, size.height * 0.25), p);
-    canvas.drawLine(Offset(0, size.height * 0.75), Offset(size.width, size.height * 0.75), p);
-  }
-
-  void _drawTrees(Canvas canvas, Size size) {
-    final rng = Random(42);
-    final trunk = Paint()..color = const Color(0xFF1E1006);
-    final shadow = Paint()..color = Colors.black.withValues(alpha: 0.35);
-
-    // Dense tree border + scattered interior
-    List<List<double>> trees = [];
-    // Borders
-    for (int i = 0; i < 60; i++) {
-      trees.add([rng.nextDouble() * size.width, rng.nextDouble() * 80]);
-      trees.add([rng.nextDouble() * size.width, size.height - rng.nextDouble() * 80]);
-      trees.add([rng.nextDouble() * 80, rng.nextDouble() * size.height]);
-      trees.add([size.width - rng.nextDouble() * 80, rng.nextDouble() * size.height]);
-    }
-    // Interior scatter
-    for (int i = 0; i < 80; i++) {
-      trees.add([80 + rng.nextDouble() * (size.width - 160),
-                 80 + rng.nextDouble() * (size.height - 160)]);
+        Offset(rng.nextDouble() * size.width, rng.nextDouble() * size.height),
+        6 + rng.nextDouble() * 20,
+        Paint()..color = Color.lerp(const Color(0xFF070C18), const Color(0xFF101B34), rng.nextDouble())!,
+      );
     }
 
-    for (var t in trees) {
-      double x = t[0], y = t[1];
-      double s = 0.5 + rng.nextDouble() * 0.8;
-      // Shadow
+    final pathPaint = Paint()
+      ..color = const Color(0xFF10192D)
+      ..strokeWidth = 28
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+    canvas.drawLine(Offset(0, size.height * 0.5), Offset(size.width, size.height * 0.5), pathPaint);
+    canvas.drawLine(Offset(size.width * 0.5, 0), Offset(size.width * 0.5, size.height), pathPaint);
+    pathPaint.strokeWidth = 18;
+    canvas.drawLine(const Offset(120, 120), Offset(size.width * 0.38, size.height * 0.38), pathPaint);
+    canvas.drawLine(Offset(size.width - 120, 120), Offset(size.width * 0.62, size.height * 0.38), pathPaint);
+    canvas.drawLine(Offset(120, size.height - 120), Offset(size.width * 0.38, size.height * 0.62), pathPaint);
+    canvas.drawLine(Offset(size.width - 120, size.height - 120), Offset(size.width * 0.62, size.height * 0.62), pathPaint);
+
+    final pools = [
+      const Offset(320, 420), const Offset(750, 280), const Offset(1100, 600),
+      const Offset(450, 900), const Offset(900, 1050), const Offset(180, 650), const Offset(1200, 350),
+    ];
+    for (final c in pools) {
       canvas.drawOval(
-          Rect.fromCenter(center: Offset(x + 5 * s, y + 20 * s),
-              width: 26 * s, height: 9 * s), shadow);
-      // Trunk
-      canvas.drawRect(Rect.fromCenter(
-          center: Offset(x, y + 13 * s), width: 7 * s, height: 18 * s), trunk);
-      // Foliage layers
+        Rect.fromCenter(center: c, width: 120, height: 70),
+        Paint()
+          ..color = ToxicTheme.green.withOpacity(0.08)
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 18),
+      );
+      canvas.drawOval(Rect.fromCenter(center: c, width: 76, height: 44), Paint()..color = ToxicTheme.greenDark.withOpacity(0.8));
+    }
+
+    for (int i = 0; i < 80; i++) {
+      final x = 50 + rng.nextDouble() * (size.width - 100);
+      final y = 50 + rng.nextDouble() * (size.height - 100);
+      final s = 0.7 + rng.nextDouble() * 0.9;
+      canvas.drawRect(Rect.fromCenter(center: Offset(x, y + 12 * s), width: 7 * s, height: 18 * s), Paint()..color = const Color(0xFF161A22));
       for (int layer = 0; layer < 3; layer++) {
-        double ly = y - layer * 11 * s;
-        double lr = (20 - layer * 3) * s;
-        final leaf = Paint()
-          ..color = Color.lerp(
-              const Color(0xFF0A1E0A),
-              const Color(0xFF163016),
-              rng.nextDouble())!;
-        canvas.drawCircle(Offset(x, ly), lr, leaf);
-        canvas.drawCircle(Offset(x, ly), lr * 0.65,
-            Paint()..color = const Color(0xFF080C08).withValues(alpha: 0.7));
+        canvas.drawCircle(Offset(x, y - layer * 11 * s), (20 - layer * 3) * s, Paint()..color = const Color(0xFF0F1630));
       }
     }
-  }
 
-  void _drawRocks(Canvas canvas, Size size) {
-    final rng = Random(99);
-    const rocks = [
-      [200.0, 380.0, 22.0], [560.0, 260.0, 16.0], [820.0, 540.0, 24.0],
-      [340.0, 660.0, 14.0], [720.0, 420.0, 18.0], [480.0, 820.0, 20.0],
-      [1050.0, 300.0, 15.0], [160.0, 920.0, 19.0], [1150.0, 750.0, 17.0],
-      [900.0, 980.0, 21.0], [640.0, 1050.0, 13.0], [1250.0, 480.0, 16.0],
-    ];
-    for (var r in rocks) {
-      canvas.drawOval(Rect.fromCenter(
-          center: Offset(r[0], r[1]), width: r[2] * 2.3, height: r[2] * 1.4),
-          Paint()..color = const Color(0xFF252525));
-      canvas.drawOval(Rect.fromCenter(
-          center: Offset(r[0] - 3, r[1] - 3), width: r[2] * 0.9, height: r[2] * 0.5),
-          Paint()..color = const Color(0xFF353535));
-    }
-  }
-
-  void _drawBushes(Canvas canvas, Size size) {
-    final rng = Random(77);
-    for (int i = 0; i < 60; i++) {
-      double x = 60 + rng.nextDouble() * (size.width - 120);
-      double y = 60 + rng.nextDouble() * (size.height - 120);
-      double r = 8 + rng.nextDouble() * 14;
-      canvas.drawCircle(Offset(x, y), r,
-          Paint()..color = Color.lerp(
-              const Color(0xFF0C1A0C), const Color(0xFF142814),
-              rng.nextDouble())!);
-    }
-  }
-
-  void _drawLighting(Canvas canvas, Size size) {
-    // Vignette
     canvas.drawRect(
-        Rect.fromLTWH(0, 0, size.width, size.height),
-        Paint()
-          ..shader = RadialGradient(
-            colors: [Colors.transparent, const Color(0xFF020602).withValues(alpha: 0.75)],
-            stops: const [0.45, 1.0],
-          ).createShader(Rect.fromLTWH(0, 0, size.width, size.height)));
-    // Fog wisps
-    final fogPaint = Paint()
-      ..color = const Color(0xFF0A1A0A).withValues(alpha: 0.2);
-    final rng = Random(55);
-    for (int i = 0; i < 8; i++) {
-      canvas.drawOval(Rect.fromCenter(
-          center: Offset(rng.nextDouble() * size.width, rng.nextDouble() * size.height),
-          width: 120 + rng.nextDouble() * 200,
-          height: 40 + rng.nextDouble() * 60), fogPaint);
-    }
+      Rect.fromLTWH(0, 0, size.width, size.height),
+      Paint()..shader = RadialGradient(colors: [Colors.transparent, Colors.black.withOpacity(0.82)], stops: const [0.45, 1]).createShader(Rect.fromLTWH(0, 0, size.width, size.height)),
+    );
   }
 
   @override
-  bool shouldRepaint(_) => false;
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-// ── Task Marker ──────────────────────────────────────────────────────────────
-class TaskMarker extends StatefulWidget {
+class NightmareMapPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final bg = Paint()
+      ..shader = const LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Color(0xFF05000A), Color(0xFF090013), Color(0xFF000000)],
+      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), bg);
+
+    final rng = Random(77);
+    for (int i = 0; i < 180; i++) {
+      final r = 10 + rng.nextDouble() * 30;
+      canvas.drawCircle(
+        Offset(rng.nextDouble() * size.width, rng.nextDouble() * size.height),
+        r,
+        Paint()..color = Color.lerp(const Color(0xFF10031A), const Color(0xFF001C24), rng.nextDouble())!,
+      );
+    }
+
+    final neonGrid = Paint()
+      ..color = ToxicTheme.purple.withOpacity(0.16)
+      ..strokeWidth = 2;
+    for (double x = 120; x < size.width; x += 220) {
+      canvas.drawLine(Offset(x, 0), Offset(x, size.height), neonGrid);
+    }
+    for (double y = 120; y < size.height; y += 220) {
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), neonGrid);
+    }
+
+    final lava = [
+      const Offset(260, 250), const Offset(1080, 300), const Offset(1140, 760),
+      const Offset(760, 980), const Offset(240, 920),
+    ];
+    for (final c in lava) {
+      canvas.drawOval(Rect.fromCenter(center: c, width: 150, height: 90), Paint()..color = ToxicTheme.cyan.withOpacity(0.08)..maskFilter = const MaskFilter.blur(BlurStyle.normal, 26));
+      canvas.drawOval(Rect.fromCenter(center: c, width: 90, height: 54), Paint()..color = ToxicTheme.purple.withOpacity(0.6));
+      canvas.drawOval(Rect.fromCenter(center: Offset(c.dx - 10, c.dy - 6), width: 38, height: 18), Paint()..color = Colors.white.withOpacity(0.12));
+    }
+
+    final wall = Paint()
+      ..color = const Color(0xFF110B1A)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 26
+      ..strokeCap = StrokeCap.round;
+    canvas.drawRect(const Rect.fromLTWH(140, 140, 1120, 920), wall);
+    wall.strokeWidth = 16;
+    canvas.drawLine(const Offset(140, 600), const Offset(1260, 600), wall);
+    canvas.drawLine(const Offset(700, 140), const Offset(700, 1060), wall);
+    canvas.drawLine(const Offset(280, 260), const Offset(520, 520), wall);
+    canvas.drawLine(const Offset(1120, 260), const Offset(880, 520), wall);
+    canvas.drawLine(const Offset(320, 960), const Offset(540, 740), wall);
+    canvas.drawLine(const Offset(1080, 960), const Offset(860, 740), wall);
+
+    final runePaint = Paint()
+      ..color = ToxicTheme.cyan.withOpacity(0.18)
+      ..strokeWidth = 3
+      ..style = PaintingStyle.stroke;
+    for (final c in [const Offset(700, 210), const Offset(230, 600), const Offset(1170, 600), const Offset(700, 990)]) {
+      canvas.drawCircle(c, 46, runePaint);
+      canvas.drawCircle(c, 24, runePaint);
+      canvas.drawLine(Offset(c.dx - 32, c.dy), Offset(c.dx + 32, c.dy), runePaint);
+      canvas.drawLine(Offset(c.dx, c.dy - 32), Offset(c.dx, c.dy + 32), runePaint);
+    }
+
+    canvas.drawRect(
+      Rect.fromLTWH(0, 0, size.width, size.height),
+      Paint()..shader = RadialGradient(colors: [Colors.transparent, Colors.black.withOpacity(0.84)], stops: const [0.40, 1]).createShader(Rect.fromLTWH(0, 0, size.width, size.height)),
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class TaskMarker extends StatelessWidget {
   final bool isCompleted;
   final VoidCallback? onTap;
   const TaskMarker({super.key, this.isCompleted = false, this.onTap});
-  @override
-  State<TaskMarker> createState() => _TaskMarkerState();
-}
-
-class _TaskMarkerState extends State<TaskMarker> with SingleTickerProviderStateMixin {
-  late AnimationController _ctrl;
-  late Animation<double> _pulse;
-  @override
-  void initState() {
-    super.initState();
-    _ctrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 900))
-      ..repeat(reverse: true);
-    _pulse = Tween<double>(begin: 0.85, end: 1.15).animate(_ctrl);
-  }
-  @override
-  void dispose() { _ctrl.dispose(); super.dispose(); }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.isCompleted) {
-      return Container(width: 30, height: 30,
-          decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.green),
-          child: const Icon(Icons.check, color: Colors.white, size: 18));
-    }
     return GestureDetector(
-      onTap: widget.onTap,
-      child: AnimatedBuilder(
-        animation: _pulse,
-        builder: (_, __) => Transform.scale(
-          scale: _pulse.value,
-          child: Container(
-            width: 32, height: 32,
-            decoration: BoxDecoration(shape: BoxShape.circle,
-              color: Colors.amber.shade700,
-              boxShadow: [BoxShadow(color: Colors.amber.withValues(alpha: 0.7),
-                  blurRadius: 12, spreadRadius: 3)],
-            ),
-            child: const Icon(Icons.bolt, color: Colors.black, size: 20),
-          ),
+      onTap: onTap,
+      child: Container(
+        width: 34,
+        height: 34,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: isCompleted ? ToxicTheme.greenDark : const Color(0xFF041008),
+          border: Border.all(color: isCompleted ? ToxicTheme.green : ToxicTheme.greenGlow, width: 2),
+          boxShadow: [BoxShadow(color: (isCompleted ? ToxicTheme.green : ToxicTheme.greenGlow).withOpacity(0.35), blurRadius: 12, spreadRadius: 1)],
         ),
+        child: Icon(isCompleted ? Icons.check : Icons.assignment, color: isCompleted ? ToxicTheme.green : ToxicTheme.white, size: 18),
       ),
     );
   }
 }
 
-// ── Powerup Widget ───────────────────────────────────────────────────────────
-class PowerupWidget extends StatefulWidget {
-  final PowerupType type;
-  final VoidCallback? onCollect;
-  const PowerupWidget({super.key, required this.type, this.onCollect});
-  @override
-  State<PowerupWidget> createState() => _PowerupWidgetState();
-}
-
-class _PowerupWidgetState extends State<PowerupWidget>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _ctrl;
-  late Animation<double> _float;
-
-  Color get _color {
-    switch (widget.type) {
-      case PowerupType.speedBoost:   return Colors.yellow;
-      case PowerupType.invisibility: return Colors.purple;
-      case PowerupType.healthPack:   return Colors.green;
-      case PowerupType.flashbang:    return Colors.orange;
-    }
-  }
-
-  IconData get _icon {
-    switch (widget.type) {
-      case PowerupType.speedBoost:   return Icons.bolt;
-      case PowerupType.invisibility: return Icons.visibility_off;
-      case PowerupType.healthPack:   return Icons.favorite;
-      case PowerupType.flashbang:    return Icons.flash_on;
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _ctrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200))
-      ..repeat(reverse: true);
-    _float = Tween<double>(begin: -4, end: 4).animate(_ctrl);
-  }
-  @override
-  void dispose() { _ctrl.dispose(); super.dispose(); }
-
+class PowerupWidget extends StatelessWidget {
+  final dynamic type;
+  const PowerupWidget({super.key, required this.type});
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: widget.onCollect,
-      child: AnimatedBuilder(
-        animation: _float,
-        builder: (_, __) => Transform.translate(
-          offset: Offset(0, _float.value),
-          child: Container(
-            width: 34, height: 34,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: _color.withValues(alpha: 0.2),
-              border: Border.all(color: _color.withValues(alpha: 0.8), width: 2),
-              boxShadow: [BoxShadow(color: _color.withValues(alpha: 0.5),
-                  blurRadius: 10, spreadRadius: 2)],
-            ),
-            child: Icon(_icon, color: _color, size: 18),
-          ),
-        ),
-      ),
+    final label = type.toString().split('.').last;
+    final icon = label == 'speedBoost' ? Icons.bolt : label == 'healthPack' ? Icons.favorite : label == 'flashbang' ? Icons.flash_on : Icons.visibility_off;
+    final color = label == 'speedBoost' ? ToxicTheme.green : label == 'healthPack' ? ToxicTheme.red : label == 'flashbang' ? Colors.orange : ToxicTheme.purple;
+    return Container(
+      width: 36,
+      height: 36,
+      decoration: BoxDecoration(shape: BoxShape.circle, color: color.withOpacity(0.2), border: Border.all(color: color, width: 2), boxShadow: [BoxShadow(color: color.withOpacity(0.45), blurRadius: 14)]),
+      child: Icon(icon, color: color, size: 20),
     );
   }
 }
 
-// ── Trap Widget ──────────────────────────────────────────────────────────────
 class TrapWidget extends StatelessWidget {
   final bool isTriggered;
-  const TrapWidget({super.key, this.isTriggered = false});
+  const TrapWidget({super.key, required this.isTriggered});
+  @override
+  Widget build(BuildContext context) {
+    return Opacity(
+      opacity: isTriggered ? 0.35 : 1,
+      child: Container(
+        width: 28,
+        height: 28,
+        decoration: BoxDecoration(shape: BoxShape.circle, color: ToxicTheme.redDim.withOpacity(0.18), border: Border.all(color: ToxicTheme.red, width: 2)),
+        child: const Icon(Icons.warning_amber_rounded, color: ToxicTheme.red, size: 16),
+      ),
+    );
+  }
+}
+
+class PortalWidget extends StatelessWidget {
+  final bool active;
+  const PortalWidget({super.key, this.active = true});
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 28, height: 28,
+      width: 96,
+      height: 96,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: isTriggered
-            ? Colors.grey.withValues(alpha: 0.3)
-            : const Color(0xFF8B4513).withValues(alpha: 0.8),
-        border: Border.all(
-            color: isTriggered ? Colors.grey : Colors.brown, width: 2),
+        gradient: RadialGradient(colors: [ToxicTheme.cyan.withOpacity(0.95), ToxicTheme.purple.withOpacity(0.85), Colors.transparent], stops: const [0.12, 0.6, 1]),
+        boxShadow: [
+          BoxShadow(color: ToxicTheme.cyan.withOpacity(active ? 0.5 : 0.1), blurRadius: 28, spreadRadius: 4),
+          BoxShadow(color: ToxicTheme.purple.withOpacity(active ? 0.35 : 0.08), blurRadius: 38, spreadRadius: 6),
+        ],
       ),
-      child: Icon(Icons.dangerous,
-          color: isTriggered ? Colors.grey : Colors.orange, size: 16),
+      child: const Center(child: Icon(Icons.change_circle_outlined, color: Colors.white, size: 42)),
     );
   }
 }
 
-// ── Silhouette Player ────────────────────────────────────────────────────────
+class BloodSplatter extends StatelessWidget {
+  const BloodSplatter({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(size: const Size(80, 80), painter: _BloodPainter());
+  }
+}
+
+class _BloodPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final p = Paint()..color = ToxicTheme.red.withOpacity(0.65);
+    final rng = Random(5);
+    for (int i = 0; i < 15; i++) {
+      final x = rng.nextDouble() * size.width;
+      final y = rng.nextDouble() * size.height;
+      final r = 3 + rng.nextDouble() * 9;
+      canvas.drawCircle(Offset(x, y), r, p);
+    }
+  }
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+
 class SilhouettePlayer extends StatefulWidget {
   final bool isKiller;
   final bool isMe;
@@ -329,216 +268,246 @@ class SilhouettePlayer extends StatefulWidget {
   final String hunterType;
   final int health;
   final double size;
+
   const SilhouettePlayer({
-    super.key, this.isKiller = false, this.isMe = false,
-    this.isAlive = true, this.isInvisible = false,
-    required this.username, this.hunterType = 'stalker',
-    this.health = 100, this.size = 38,
+    super.key,
+    required this.isKiller,
+    required this.isMe,
+    required this.isAlive,
+    this.isInvisible = false,
+    required this.username,
+    required this.hunterType,
+    required this.health,
+    this.size = 40,
   });
+
   @override
   State<SilhouettePlayer> createState() => _SilhouettePlayerState();
 }
 
 class _SilhouettePlayerState extends State<SilhouettePlayer>
     with SingleTickerProviderStateMixin {
-  late AnimationController _ctrl;
-  late Animation<double> _bob;
+  late final AnimationController _controller;
 
   @override
   void initState() {
     super.initState();
-    _ctrl = AnimationController(vsync: this,
-        duration: const Duration(milliseconds: 500))..repeat(reverse: true);
-    _bob = Tween<double>(begin: -2, end: 2).animate(_ctrl);
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: widget.isKiller ? 900 : 1300),
+    )..repeat(reverse: true);
   }
-  @override
-  void dispose() { _ctrl.dispose(); super.dispose(); }
 
-  Color get _killerColor {
-    final data = HunterTypeData.all[HunterType.values.firstWhere(
-        (e) => e.name == widget.hunterType,
-        orElse: () => HunterType.stalker)];
-    return data?.color ?? Colors.red;
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    Color color = widget.isKiller ? _killerColor
-        : (widget.isMe ? Colors.white : const Color(0xFF88BBFF));
-    if (!widget.isAlive) color = color.withValues(alpha: 0.3);
-    if (widget.isInvisible && !widget.isMe) return const SizedBox.shrink();
+    final baseColor = !widget.isAlive
+        ? Colors.grey.shade500
+        : widget.isKiller
+            ? ToxicTheme.red
+            : ToxicTheme.cyan;
 
     return AnimatedBuilder(
-      animation: _bob,
-      builder: (_, __) => Transform.translate(
-        offset: Offset(0, _bob.value),
-        child: Opacity(
-          opacity: widget.isInvisible ? 0.25 : 1.0,
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            // Health bar (for non-killers)
-            if (!widget.isKiller && widget.isAlive)
-              Container(
-                width: widget.size * 1.1, height: 4,
-                margin: const EdgeInsets.only(bottom: 2),
-                decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.5),
-                  borderRadius: BorderRadius.circular(2),
-                ),
-                child: FractionallySizedBox(
-                  widthFactor: widget.health / 100,
-                  alignment: Alignment.centerLeft,
-                  child: Container(
+      animation: _controller,
+      builder: (context, _) {
+        final bob = sin(_controller.value * pi * 2) * (widget.isKiller ? 2.0 : 1.4);
+        final aura = 0.25 + ((_controller.value - 0.5).abs() * -2 + 1) * 0.18;
+        return Opacity(
+          opacity: widget.isInvisible && !widget.isMe ? 0.06 : widget.isInvisible ? 0.22 : 1,
+          child: Transform.translate(
+            offset: Offset(0, -bob),
+            child: Column(
+              children: [
+                if (widget.health > 0)
+                  Container(
+                    width: widget.size + 10,
+                    height: 6,
+                    margin: const EdgeInsets.only(bottom: 5),
                     decoration: BoxDecoration(
-                      color: widget.health > 60 ? Colors.green
-                          : widget.health > 30 ? Colors.orange : Colors.red,
-                      borderRadius: BorderRadius.circular(2),
+                      color: Colors.black.withOpacity(0.55),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: ToxicTheme.greenDark.withOpacity(0.8)),
+                    ),
+                    child: FractionallySizedBox(
+                      alignment: Alignment.centerLeft,
+                      widthFactor: (widget.health.clamp(0, 100)) / 100,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: widget.health > 60
+                                ? [ToxicTheme.green, ToxicTheme.cyan]
+                                : widget.health > 30
+                                    ? [Colors.orangeAccent, Colors.deepOrangeAccent]
+                                    : [ToxicTheme.red, const Color(0xFFFF8A80)],
+                          ),
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: [BoxShadow(color: baseColor.withOpacity(0.35), blurRadius: 8)],
+                        ),
+                      ),
+                    ),
+                  ),
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      width: widget.size * 1.05,
+                      height: widget.size * 1.05,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: RadialGradient(
+                          colors: [baseColor.withOpacity(aura), Colors.transparent],
+                        ),
+                      ),
+                    ),
+                    CustomPaint(
+                      size: Size(widget.size, widget.size * 1.32),
+                      painter: _AvatarPainter(
+                        color: baseColor,
+                        isKiller: widget.isKiller,
+                        isAlive: widget.isAlive,
+                        pulse: _controller.value,
+                      ),
+                    ),
+                    if (widget.isInvisible)
+                      Positioned(
+                        right: 0,
+                        bottom: widget.size * 0.14,
+                        child: Container(
+                          padding: const EdgeInsets.all(3),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.black.withOpacity(0.7),
+                            border: Border.all(color: ToxicTheme.purple.withOpacity(0.8)),
+                          ),
+                          child: const Icon(Icons.visibility_off, color: ToxicTheme.purple, size: 12),
+                        ),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: const Color(0xCC08111F),
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(
+                      color: widget.isMe ? ToxicTheme.cyan : baseColor.withOpacity(0.5),
+                    ),
+                    boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.25), blurRadius: 6)],
+                  ),
+                  child: Text(
+                    widget.isMe ? 'YOU' : widget.username,
+                    style: TextStyle(
+                      color: widget.isMe ? ToxicTheme.cyan : ToxicTheme.white,
+                      fontSize: 9,
+                      fontFamily: 'monospace',
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-              ),
-            if (widget.isMe)
-              Container(
-                width: widget.size + 12, height: widget.size + 12,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.4), width: 1.5),
-                ),
-              ),
-            CustomPaint(
-              size: Size(widget.size, widget.size * 1.6),
-              painter: _SilhouettePainter(
-                  color: color, isKiller: widget.isKiller,
-                  isAlive: widget.isAlive, hunterType: widget.hunterType),
+              ],
             ),
-            const SizedBox(height: 2),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-              decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.7),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Text(widget.username,
-                  style: TextStyle(color: color, fontSize: 9, fontWeight: FontWeight.bold)),
-            ),
-          ]),
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
 
-class _SilhouettePainter extends CustomPainter {
+class _AvatarPainter extends CustomPainter {
   final Color color;
-  final bool isKiller, isAlive;
-  final String hunterType;
-  _SilhouettePainter({required this.color, required this.isKiller,
-      required this.isAlive, required this.hunterType});
+  final bool isKiller;
+  final bool isAlive;
+  final double pulse;
+
+  _AvatarPainter({
+    required this.color,
+    required this.isKiller,
+    required this.isAlive,
+    required this.pulse,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
-    final p = Paint()..color = color;
-    double w = size.width, h = size.height;
-    // Head
-    canvas.drawCircle(Offset(w / 2, h * 0.17), w * 0.21, p);
-    // Body
-    Path body = Path()
-      ..moveTo(w * 0.28, h * 0.36)..lineTo(w * 0.18, h * 0.70)
-      ..lineTo(w * 0.33, h * 0.70)..lineTo(w * 0.38, h * 0.54)
-      ..lineTo(w * 0.62, h * 0.54)..lineTo(w * 0.67, h * 0.70)
-      ..lineTo(w * 0.82, h * 0.70)..lineTo(w * 0.72, h * 0.36)..close();
-    canvas.drawPath(body, p);
-    // Legs
-    canvas.drawRRect(RRect.fromRectAndRadius(
-        Rect.fromLTWH(w * 0.22, h * 0.68, w * 0.22, h * 0.32), Radius.circular(w * 0.1)), p);
-    canvas.drawRRect(RRect.fromRectAndRadius(
-        Rect.fromLTWH(w * 0.56, h * 0.68, w * 0.22, h * 0.32), Radius.circular(w * 0.1)), p);
+    final w = size.width;
+    final h = size.height;
+    final line = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = w * 0.075
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+    final glow = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = w * 0.16
+      ..strokeCap = StrokeCap.round
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10)
+      ..color = color.withOpacity(isAlive ? 0.22 : 0.08);
+    final core = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = w * 0.075
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round
+      ..color = isAlive ? color : Colors.grey.shade500;
 
-    if (isKiller) _drawWeapon(canvas, size);
-    if (!isAlive) _drawDeadEyes(canvas, size);
-    if (isKiller) _drawHunterEffect(canvas, size);
-  }
+    final headCenter = Offset(w * 0.5, h * 0.2);
+    canvas.drawCircle(headCenter, w * 0.14, glow);
+    canvas.drawCircle(headCenter, w * 0.14, core);
 
-  void _drawWeapon(Canvas canvas, Size size) {
-    double w = size.width, h = size.height;
-    switch (hunterType) {
-      case 'rusher':
-        // Lightning bolt
-        final wp = Paint()..color = Colors.yellow..strokeWidth = 3
-            ..style = PaintingStyle.stroke;
-        Path bolt = Path()
-          ..moveTo(w * 0.82, h * 0.28)..lineTo(w * 1.05, h * 0.15)
-          ..lineTo(w * 0.95, h * 0.30)..lineTo(w * 1.18, h * 0.18);
-        canvas.drawPath(bolt, wp);
-        break;
-      case 'trapper':
-        // Bear trap
-        final tp = Paint()..color = Colors.brown..strokeWidth = 2.5
-            ..style = PaintingStyle.stroke;
-        canvas.drawCircle(Offset(w * 1.05, h * 0.22), w * 0.18, tp);
-        canvas.drawLine(Offset(w * 0.88, h * 0.22), Offset(w * 1.22, h * 0.22), tp);
-        break;
-      case 'berserk':
-        // Big axe
-        final ap = Paint()..color = const Color(0xFFCC4400);
-        Path axe = Path()
-          ..moveTo(w * 0.78, h * 0.38)..lineTo(w * 1.08, h * 0.08)
-          ..lineTo(w * 1.20, h * 0.18)..lineTo(w * 1.02, h * 0.32)..close();
-        canvas.drawPath(axe, ap);
-        canvas.drawLine(Offset(w * 0.78, h * 0.38), Offset(w * 1.08, h * 0.08),
-            Paint()..color = const Color(0xFF661A00)..strokeWidth = 3
-                ..style = PaintingStyle.stroke);
-        break;
-      default: // stalker — scythe
-        final wp = Paint()..color = const Color(0xFFAAAAAA)..strokeWidth = 2.5
-            ..style = PaintingStyle.stroke..strokeCap = StrokeCap.round;
-        canvas.drawLine(Offset(w * 0.78, h * 0.40), Offset(w * 1.08, h * 0.08), wp);
-        final bp = Paint()..color = const Color(0xFFCCCCCC);
-        Path blade = Path()
-          ..moveTo(w * 1.04, h * 0.10)..lineTo(w * 0.84, h * 0.06)
-          ..lineTo(w * 0.91, h * 0.20)..close();
-        canvas.drawPath(blade, bp);
+    final torso = Path()
+      ..moveTo(w * 0.5, h * 0.34)
+      ..lineTo(w * 0.5, h * 0.72);
+    canvas.drawPath(torso, glow);
+    canvas.drawPath(torso, core);
+
+    final shoulderY = h * 0.42;
+    final swing = sin(pulse * pi * 2) * w * (isKiller ? 0.09 : 0.06);
+    final leftArm = Path()
+      ..moveTo(w * 0.5, shoulderY)
+      ..lineTo(w * 0.32 - swing, h * 0.58);
+    final rightArm = Path()
+      ..moveTo(w * 0.5, shoulderY)
+      ..lineTo(w * 0.68 + swing, h * 0.58);
+    canvas.drawPath(leftArm, glow);
+    canvas.drawPath(rightArm, glow);
+    canvas.drawPath(leftArm, core);
+    canvas.drawPath(rightArm, core);
+
+    final leftLeg = Path()
+      ..moveTo(w * 0.5, h * 0.72)
+      ..lineTo(w * 0.38 - swing * 0.35, h * 1.0);
+    final rightLeg = Path()
+      ..moveTo(w * 0.5, h * 0.72)
+      ..lineTo(w * 0.62 + swing * 0.35, h * 1.0);
+    canvas.drawPath(leftLeg, glow);
+    canvas.drawPath(rightLeg, glow);
+    canvas.drawPath(leftLeg, core);
+    canvas.drawPath(rightLeg, core);
+
+    canvas.drawCircle(headCenter, w * 0.065, Paint()..color = Colors.white.withOpacity(isAlive ? 0.95 : 0.4));
+    if (isKiller) {
+      final blade = Path()
+        ..moveTo(w * 0.72, h * 0.56)
+        ..lineTo(w * 0.92, h * 0.4)
+        ..lineTo(w * 0.86, h * 0.62)
+        ..close();
+      canvas.drawPath(blade, Paint()..color = const Color(0xFFE3F2FD).withOpacity(0.9));
+      canvas.drawLine(
+        Offset(w * 0.7, h * 0.58),
+        Offset(w * 0.82, h * 0.66),
+        Paint()..color = const Color(0xFF4E342E)..strokeWidth = w * 0.06..strokeCap = StrokeCap.round,
+      );
     }
-  }
-
-  void _drawHunterEffect(Canvas canvas, Size size) {
-    double w = size.width, h = size.height;
-    switch (hunterType) {
-      case 'stalker':
-        // Purple glow eyes
-        canvas.drawCircle(Offset(w * 0.41, h * 0.155), 3,
-            Paint()..color = Colors.purple.withValues(alpha: 0.9));
-        canvas.drawCircle(Offset(w * 0.59, h * 0.155), 3,
-            Paint()..color = Colors.purple.withValues(alpha: 0.9));
-        break;
-      case 'rusher':
-        // Orange glow
-        canvas.drawCircle(Offset(w * 0.41, h * 0.155), 3,
-            Paint()..color = Colors.orange);
-        canvas.drawCircle(Offset(w * 0.59, h * 0.155), 3,
-            Paint()..color = Colors.orange);
-        break;
-      case 'berserk':
-        // Red glowing eyes
-        for (var pos in [Offset(w * 0.41, h * 0.155), Offset(w * 0.59, h * 0.155)]) {
-          canvas.drawCircle(pos, 4,
-              Paint()..color = Colors.red..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3));
-        }
-        break;
-      default:
-        break;
-    }
-  }
-
-  void _drawDeadEyes(Canvas canvas, Size size) {
-    double w = size.width, h = size.height;
-    final p = Paint()..color = Colors.red..strokeWidth = 2..style = PaintingStyle.stroke;
-    canvas.drawLine(Offset(w * 0.37, h * 0.12), Offset(w * 0.46, h * 0.21), p);
-    canvas.drawLine(Offset(w * 0.46, h * 0.12), Offset(w * 0.37, h * 0.21), p);
-    canvas.drawLine(Offset(w * 0.54, h * 0.12), Offset(w * 0.63, h * 0.21), p);
-    canvas.drawLine(Offset(w * 0.63, h * 0.12), Offset(w * 0.54, h * 0.21), p);
   }
 
   @override
-  bool shouldRepaint(covariant _SilhouettePainter old) =>
-      old.color != color || old.isAlive != isAlive;
+  bool shouldRepaint(covariant _AvatarPainter oldDelegate) =>
+      oldDelegate.pulse != pulse ||
+      oldDelegate.color != color ||
+      oldDelegate.isKiller != isKiller ||
+      oldDelegate.isAlive != isAlive;
 }

@@ -26,10 +26,10 @@ class ShadowHuntApp extends StatelessWidget {
         title: 'Shadow Hunt',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          colorScheme: ColorScheme.dark(
-            primary: const Color(0xFFFF3333),
-            secondary: const Color(0xFF8B0000),
-            surface: const Color(0xFF1A1A1A),
+          colorScheme: const ColorScheme.dark(
+            primary: Color(0xFFFF3333),
+            secondary: Color(0xFF8B0000),
+            surface: Color(0xFF1A1A1A),
           ),
           scaffoldBackgroundColor: const Color(0xFF0A0A0A),
           useMaterial3: true,

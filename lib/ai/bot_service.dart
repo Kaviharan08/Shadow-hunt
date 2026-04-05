@@ -59,8 +59,8 @@ class BotService {
     double dy = _state == 'flee' ? _y - _ty : _ty - _y;
     double d = sqrt(dx * dx + dy * dy);
     if (d < 15) { _pickPatrol(); return; }
-    _x = (_x + (dx / d) * spd + (_rng.nextDouble() - 0.5)).clamp(50, mapW - 50);
-    _y = (_y + (dy / d) * spd + (_rng.nextDouble() - 0.5)).clamp(50, mapH - 50);
+    _x = (_x + (dx / d) * spd + (_rng.nextDouble() - 0.5)).clamp(50.0, mapW - 50.0).toDouble();
+    _y = (_y + (dy / d) * spd + (_rng.nextDouble() - 0.5)).clamp(50.0, mapH - 50.0).toDouble();
     onMove(_x, _y);
   }
 
