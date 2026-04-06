@@ -614,7 +614,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
             children: [
               Text(
                 label,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w800,
                   letterSpacing: 2,

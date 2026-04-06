@@ -648,7 +648,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                 child: Stack(
                   children: [
                     CustomPaint(size: const Size(_mapW, _mapH), painter: _round == 1 ? ForestMapPainter() : NightmareMapPainter()),
-                    if (_phase == 'portal') Positioned(left: _portalPosition.dx - 48, top: _portalPosition.dy - 48, child: PortalWidget(active: true)),
+                    if (_phase == 'portal') Positioned(left: _portalPosition.dx - 48, top: _portalPosition.dy - 48, child: const PortalWidget(active: true)),
                     ..._traps.map((t) => Positioned(left: t.position.dx - 14, top: t.position.dy - 14, child: TrapWidget(isTriggered: t.isTriggered))),
                     ..._powerups.where((p) => !p.isCollected).map((p) => Positioned(left: p.position.dx - 18, top: p.position.dy - 18, child: PowerupWidget(type: p.type))),
                     ..._tasks.map((t) => Positioned(left: t.position.dx - 16, top: t.position.dy - 16, child: TaskMarker(isCompleted: t.isCompleted, onTap: (_myRole == 'survivor' && !t.isCompleted && _phase.startsWith('round')) ? () => _startTask(t) : null))),

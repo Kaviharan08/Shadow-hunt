@@ -76,8 +76,8 @@ class TaskModel {
     ];
     final titles1 = ['Decode the Signal', 'Hack the Terminal', 'Restore Power', 'Seal the Breach', 'Scan the Totem'];
     final titles2 = ['Break the Seal', 'Reboot Core', 'Decrypt Rune', 'Stabilize Rift', 'Charge Obelisk', 'Trigger Beacon', 'Disable Ward', 'Sync Portal'];
-    final desc1 = 'Answer the question to complete the objective';
-    final desc2 = 'Round 2 challenge — harder zone, faster hunter';
+    const desc1 = 'Answer the question to complete the objective';
+    const desc2 = 'Round 2 challenge — harder zone, faster hunter';
 
     if (round == 1) {
       const count = 3;

@@ -268,7 +268,7 @@ class _HunterSelectScreenState extends State<HunterSelectScreen>
                       if (selected)
                         Icon(Icons.check_circle_rounded, color: data.color, size: 20)
                       else
-                        Icon(Icons.radio_button_unchecked, color: Colors.white24, size: 18),
+                        const Icon(Icons.radio_button_unchecked, color: Colors.white24, size: 18),
                       const Spacer(),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
@@ -353,7 +353,7 @@ class _HunterSelectScreenState extends State<HunterSelectScreen>
           const SizedBox(width: 6),
           Text(
             label,
-            style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w700),
+            style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w700),
           ),
         ],
       ),
