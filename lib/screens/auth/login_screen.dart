@@ -258,7 +258,7 @@ class ArcaneField extends StatelessWidget {
   final IconData icon;
   final bool obscure;
 
-  const ArcaneField({
+  const ArcaneField({super.key, 
     required this.controller,
     required this.hint,
     required this.icon,
@@ -322,7 +322,7 @@ class GlowButton extends StatelessWidget {
   final String text;
   final VoidCallback? onTap;
   final bool loading;
-  const GlowButton({required this.text, this.onTap, this.loading = false});
+  const GlowButton({super.key, required this.text, this.onTap, this.loading = false});
 
   @override
   Widget build(BuildContext context) {
@@ -379,7 +379,7 @@ class GlowButton extends StatelessWidget {
 }
 
 class ArcaneAvatar extends StatelessWidget {
-  const ArcaneAvatar();
+  const ArcaneAvatar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -412,7 +412,7 @@ class ArcaneAvatar extends StatelessWidget {
 }
 
 class CosmicLoginBackground extends StatelessWidget {
-  const CosmicLoginBackground();
+  const CosmicLoginBackground({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -597,7 +597,7 @@ class _CrystalHunterPainter extends CustomPainter {
       ..lineTo(center.dx + 34, center.dy + 28)
       ..close();
 
-    final shader = const LinearGradient(
+    const shader = LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
       colors: [Color(0xFFB670FF), Color(0xFF732BFF), Color(0xFF5AF0FF)],
