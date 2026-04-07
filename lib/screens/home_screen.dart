@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../services/auth_service.dart';
-import '../widgets/forest_map.dart';
 import 'auth/login_screen.dart';
 import 'leaderboard_screen.dart';
 import 'lobby_screen.dart';
@@ -17,8 +16,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen>
-    with TickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late final AnimationController _floatCtrl;
   late final AnimationController _emberCtrl;
   late final Animation<double> _float;
@@ -98,7 +96,8 @@ class _HomeScreenState extends State<HomeScreen>
                         children: [
                           Positioned.fill(
                             child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 1.5, sigmaY: 1.5),
+                              filter:
+                                  ImageFilter.blur(sigmaX: 1.5, sigmaY: 1.5),
                               child: Container(color: Colors.transparent),
                             ),
                           ),
@@ -190,7 +189,9 @@ class _HomeScreenState extends State<HomeScreen>
               ),
               const SizedBox(height: 2),
               Text(
-                _username.isEmpty ? 'UNKNOWN SURVIVOR' : _username.toUpperCase(),
+                _username.isEmpty
+                    ? 'UNKNOWN SURVIVOR'
+                    : _username.toUpperCase(),
                 style: const TextStyle(
                   color: Color(0xFFFF7B73),
                   fontSize: 16,
@@ -218,7 +219,9 @@ class _HomeScreenState extends State<HomeScreen>
   Widget _buildWideLayout() {
     return Row(
       children: [
-        const Expanded(flex: 2, child: _SideArrowColumn(alignment: CrossAxisAlignment.end)),
+        const Expanded(
+            flex: 2,
+            child: _SideArrowColumn(alignment: CrossAxisAlignment.end)),
         Expanded(
           flex: 6,
           child: Column(
@@ -260,7 +263,9 @@ class _HomeScreenState extends State<HomeScreen>
             ],
           ),
         ),
-        const Expanded(flex: 2, child: _SideArrowColumn(alignment: CrossAxisAlignment.start)),
+        const Expanded(
+            flex: 2,
+            child: _SideArrowColumn(alignment: CrossAxisAlignment.start)),
       ],
     );
   }
@@ -373,7 +378,8 @@ class _DangerButton extends StatelessWidget {
           ),
           border: Border.all(color: const Color(0xFF090303), width: 2),
           boxShadow: const [
-            BoxShadow(color: Colors.black54, blurRadius: 8, offset: Offset(0, 5))
+            BoxShadow(
+                color: Colors.black54, blurRadius: 8, offset: Offset(0, 5))
           ],
         ),
         child: Text(
@@ -530,10 +536,10 @@ class _BloodMenuPainter extends CustomPainter {
     );
 
     final glow = Paint()
-      ..shader = RadialGradient(
+      ..shader = const RadialGradient(
         colors: [
-          const Color(0x88B32020),
-          const Color(0x33401010),
+          Color(0x88B32020),
+          Color(0x33401010),
           Colors.transparent,
         ],
       ).createShader(
@@ -617,7 +623,8 @@ class _BloodMenuPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _BloodMenuPainter oldDelegate) => oldDelegate.t != t;
+  bool shouldRepaint(covariant _BloodMenuPainter oldDelegate) =>
+      oldDelegate.t != t;
 }
 
 class _PanelGrainPainter extends CustomPainter {
@@ -749,7 +756,8 @@ class _SkullEmblemPainter extends CustomPainter {
       final start = center + Offset(cos(angle), sin(angle)) * size.width * 0.18;
       final end = center + Offset(cos(angle), sin(angle)) * size.width * 0.42;
       canvas.drawLine(start, end, spikePaint);
-      canvas.drawCircle(end, size.width * 0.022, Paint()..color = const Color(0xFFF1DDC1));
+      canvas.drawCircle(
+          end, size.width * 0.022, Paint()..color = const Color(0xFFF1DDC1));
     }
 
     final skullRect = Rect.fromCenter(
@@ -759,15 +767,27 @@ class _SkullEmblemPainter extends CustomPainter {
     );
     final skullPath = Path()
       ..moveTo(skullRect.center.dx, skullRect.top)
-      ..quadraticBezierTo(skullRect.right, skullRect.top + skullRect.height * 0.05,
-          skullRect.right, skullRect.center.dy)
-      ..quadraticBezierTo(skullRect.right * 0.98, skullRect.bottom - skullRect.height * 0.12,
-          skullRect.center.dx + skullRect.width * 0.18, skullRect.bottom)
+      ..quadraticBezierTo(
+          skullRect.right,
+          skullRect.top + skullRect.height * 0.05,
+          skullRect.right,
+          skullRect.center.dy)
+      ..quadraticBezierTo(
+          skullRect.right * 0.98,
+          skullRect.bottom - skullRect.height * 0.12,
+          skullRect.center.dx + skullRect.width * 0.18,
+          skullRect.bottom)
       ..lineTo(skullRect.center.dx - skullRect.width * 0.18, skullRect.bottom)
-      ..quadraticBezierTo(skullRect.left * 1.02, skullRect.bottom - skullRect.height * 0.12,
-          skullRect.left, skullRect.center.dy)
-      ..quadraticBezierTo(skullRect.left, skullRect.top + skullRect.height * 0.05,
-          skullRect.center.dx, skullRect.top)
+      ..quadraticBezierTo(
+          skullRect.left * 1.02,
+          skullRect.bottom - skullRect.height * 0.12,
+          skullRect.left,
+          skullRect.center.dy)
+      ..quadraticBezierTo(
+          skullRect.left,
+          skullRect.top + skullRect.height * 0.05,
+          skullRect.center.dx,
+          skullRect.top)
       ..close();
 
     canvas.drawShadow(skullPath, const Color(0xFF520E0B), 18, false);
@@ -784,7 +804,8 @@ class _SkullEmblemPainter extends CustomPainter {
     final eyePaint = Paint()..color = const Color(0xFF200506);
     canvas.drawOval(
       Rect.fromCenter(
-        center: Offset(center.dx - size.width * 0.07, center.dy - size.height * 0.03),
+        center: Offset(
+            center.dx - size.width * 0.07, center.dy - size.height * 0.03),
         width: size.width * 0.06,
         height: size.height * 0.09,
       ),
@@ -792,7 +813,8 @@ class _SkullEmblemPainter extends CustomPainter {
     );
     canvas.drawOval(
       Rect.fromCenter(
-        center: Offset(center.dx + size.width * 0.07, center.dy - size.height * 0.03),
+        center: Offset(
+            center.dx + size.width * 0.07, center.dy - size.height * 0.03),
         width: size.width * 0.06,
         height: size.height * 0.09,
       ),
@@ -820,9 +842,11 @@ class _SkullEmblemPainter extends CustomPainter {
       ..strokeWidth = 2;
     for (int i = 1; i < 5; i++) {
       final x = jawRect.left + (jawRect.width / 5) * i;
-      canvas.drawLine(Offset(x, jawRect.top), Offset(x, jawRect.bottom), teethPaint);
+      canvas.drawLine(
+          Offset(x, jawRect.top), Offset(x, jawRect.bottom), teethPaint);
     }
-    canvas.drawLine(Offset(jawRect.left, jawRect.center.dy), Offset(jawRect.right, jawRect.center.dy), teethPaint);
+    canvas.drawLine(Offset(jawRect.left, jawRect.center.dy),
+        Offset(jawRect.right, jawRect.center.dy), teethPaint);
 
     final crackPaint = Paint()
       ..color = const Color(0xFF8C4337)

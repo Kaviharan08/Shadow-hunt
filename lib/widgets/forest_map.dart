@@ -436,11 +436,6 @@ class _AvatarPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final w = size.width;
     final h = size.height;
-    final line = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = w * 0.075
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round;
     final glow = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = w * 0.16

@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "262084784828",
+    "firebase_url": "https://shadow-hunt-885c6-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "shadow-hunt-885c6",
+    "storage_bucket": "shadow-hunt-885c6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:262084784828:android:04eff48216ced0d5c016b9",
+        "android_client_info": {
+          "package_name": "com.example.shadow_hunt"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCt1OntomeByO7sxPcHQ2lJ9tdg-sxPnKA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
