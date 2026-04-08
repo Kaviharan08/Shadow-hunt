@@ -36,8 +36,8 @@ class _JoystickState extends State<Joystick> {
         width: widget.size, height: widget.size,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: Colors.white.withValues(alpha: 0.07),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.18), width: 2),
+          color: Colors.white.withOpacity(0.07),
+          border: Border.all(color: Colors.white.withOpacity(0.18), width: 2),
         ),
         child: Stack(alignment: Alignment.center, children: [
           ...List.generate(4, (i) {
@@ -46,7 +46,7 @@ class _JoystickState extends State<Joystick> {
               offset: Offset(cos(a) * (_max * 0.6), sin(a) * (_max * 0.6)),
               child: Container(width: 5, height: 5,
                 decoration: BoxDecoration(shape: BoxShape.circle,
-                    color: Colors.white.withValues(alpha: 0.18))),
+                    color: Colors.white.withOpacity(0.18))),
             );
           }),
           Transform.translate(
@@ -56,10 +56,10 @@ class _JoystickState extends State<Joystick> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: _active
-                    ? Colors.red.withValues(alpha: 0.8)
-                    : Colors.white.withValues(alpha: 0.3),
+                    ? Colors.red.withOpacity(0.8)
+                    : Colors.white.withOpacity(0.3),
                 boxShadow: _active
-                    ? [BoxShadow(color: Colors.red.withValues(alpha: 0.5),
+                    ? [BoxShadow(color: Colors.red.withOpacity(0.5),
                         blurRadius: 14, spreadRadius: 2)]
                     : [],
               ),

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../services/auth_service.dart';
+import '../../widgets/forest_map.dart';
 import '../home_screen.dart';
+import 'login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -12,120 +15,175 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
-  final _usernameCtrl = TextEditingController();
+  final _nameCtrl = TextEditingController();
   bool _loading = false;
   String? _error;
 
+  @override
+  void dispose() {
+    _emailCtrl.dispose();
+    _passCtrl.dispose();
+    _nameCtrl.dispose();
+    super.dispose();
+  }
+
   Future<void> _register() async {
-    if (_usernameCtrl.text.trim().isEmpty) {
-      setState(() => _error = 'Please enter a username');
+    if (_nameCtrl.text.trim().isEmpty) {
+      setState(() => _error = 'Hunter name required');
       return;
     }
-    setState(() { _loading = true; _error = null; });
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
     final err = await context.read<AuthService>().register(
-      _emailCtrl.text.trim(), _passCtrl.text, _usernameCtrl.text.trim(),
-    );
+          _emailCtrl.text.trim(),
+          _passCtrl.text,
+          _nameCtrl.text.trim(),
+        );
     if (!mounted) return;
     if (err != null) {
-      setState(() { _error = err; _loading = false; });
+      setState(() {
+        _error = err;
+        _loading = false;
+      });
     } else {
-      Navigator.pushAndRemoveUntil(context,
-          MaterialPageRoute(builder: (_) => const HomeScreen()), (r) => false);
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const HomeScreen()),
+        (_) => false,
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: const Color(0xFF040816),
       body: Stack(
         children: [
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter, end: Alignment.bottomCenter,
-                colors: [Color(0xFF000000), Color(0xFF050F05)],
-              ),
-            ),
-          ),
+          const Positioned.fill(child: CosmicLoginBackground()),
           SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(28),
-              child: Column(
-                children: [
-                  const SizedBox(height: 20),
-                  IconButton(
-                    onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF446644)),
-                    alignment: Alignment.centerLeft,
-                  ),
-                  const SizedBox(height: 20),
-                  const Text('JOIN THE HUNT',
-                    style: TextStyle(color: Colors.white, fontSize: 26,
-                        fontWeight: FontWeight.bold, letterSpacing: 5)),
-                  const SizedBox(height: 8),
-                  const Text('CREATE YOUR IDENTITY',
-                      style: TextStyle(color: Color(0xFF446644), letterSpacing: 3, fontSize: 11)),
-                  const SizedBox(height: 40),
-                  _buildField(_usernameCtrl, 'Hunter Name', Icons.person_outline),
-                  const SizedBox(height: 16),
-                  _buildField(_emailCtrl, 'Email', Icons.email_outlined),
-                  const SizedBox(height: 16),
-                  _buildField(_passCtrl, 'Password', Icons.lock_outline, obscure: true),
-                  if (_error != null) ...[
-                    const SizedBox(height: 12),
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.red.withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.red.withOpacity(0.3)),
+            child: Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 980),
+                  child: Container(
+                    padding: const EdgeInsets.all(22),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(28),
+                      border: Border.all(color: ToxicTheme.cyan.withOpacity(0.25)),
+                      gradient: LinearGradient(
+                        colors: [
+                          const Color(0xFF0F152A).withOpacity(0.84),
+                          const Color(0xFF08101F).withOpacity(0.92),
+                        ],
                       ),
-                      child: Text(_error!, style: const TextStyle(color: Colors.red, fontSize: 13)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: ToxicTheme.purple.withOpacity(0.16),
+                          blurRadius: 28,
+                        ),
+                      ],
                     ),
-                  ],
-                  const SizedBox(height: 28),
-                  SizedBox(
-                    width: double.infinity, height: 52,
-                    child: ElevatedButton(
-                      onPressed: _loading ? null : _register,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF8B0000),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      ),
-                      child: _loading
-                          ? const SizedBox(width: 22, height: 22,
-                              child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                          : const Text('BEGIN HUNT', style: TextStyle(color: Colors.white,
-                              fontWeight: FontWeight.bold, letterSpacing: 4, fontSize: 16)),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            IconButton(
+                              onPressed: () => Navigator.pop(context),
+                              icon: const Icon(Icons.arrow_back_ios_new_rounded,
+                                  color: ToxicTheme.greenGlow),
+                            ),
+                          ],
+                        ),
+                        const ArcaneAvatar(),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'REGISTER EXPLORER',
+                          style: TextStyle(
+                            color: ToxicTheme.greenGlow,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 3,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          'ENTER THE CURSED REALM',
+                          style: TextStyle(
+                            color: ToxicTheme.white.withOpacity(0.7),
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 2,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        ArcaneField(
+                          controller: _nameCtrl,
+                          hint: 'HUNTER NAME',
+                          icon: Icons.person_outline_rounded,
+                        ),
+                        const SizedBox(height: 14),
+                        ArcaneField(
+                          controller: _emailCtrl,
+                          hint: 'EMAIL',
+                          icon: Icons.alternate_email_rounded,
+                        ),
+                        const SizedBox(height: 14),
+                        ArcaneField(
+                          controller: _passCtrl,
+                          hint: 'PASSWORD',
+                          icon: Icons.lock_outline_rounded,
+                          obscure: true,
+                        ),
+                        if (_error != null) ...[
+                          const SizedBox(height: 14),
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(14),
+                            decoration: BoxDecoration(
+                              color: ToxicTheme.red.withOpacity(0.10),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: ToxicTheme.red.withOpacity(0.35)),
+                            ),
+                            child: Text(
+                              _error!,
+                              style: const TextStyle(
+                                color: ToxicTheme.red,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                        const SizedBox(height: 18),
+                        GlowButton(
+                          text: _loading ? 'OPENING GATE...' : 'BEGIN THE HUNT',
+                          onTap: _loading ? null : _register,
+                          loading: _loading,
+                        ),
+                        const SizedBox(height: 12),
+                        TextButton(
+                          onPressed: () => Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (_) => const LoginScreen()),
+                          ),
+                          child: const Text(
+                            '> ALREADY MARKED? LOGIN',
+                            style: TextStyle(
+                              color: ToxicTheme.greenGlow,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
+                ),
               ),
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildField(TextEditingController ctrl, String hint, IconData icon, {bool obscure = false}) {
-    return TextField(
-      controller: ctrl,
-      obscureText: obscure,
-      style: const TextStyle(color: Colors.white),
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: const TextStyle(color: Color(0xFF446644)),
-        prefixIcon: Icon(icon, color: const Color(0xFF446644), size: 20),
-        filled: true,
-        fillColor: const Color(0xFF0D1F0D),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: Color(0xFF1A3A1A))),
-        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: Color(0xFF1A3A1A))),
-        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: Color(0xFF8B0000), width: 1.5)),
       ),
     );
   }
